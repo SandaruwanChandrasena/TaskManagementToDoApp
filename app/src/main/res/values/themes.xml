@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.TaskManagementToDoApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/sea_green</item>
+        <item name="colorPrimaryVariant">@color/sea_green</item>
+        <item name="android:statusBarColor">@color/sea_green</item>
+    </style>
+
+    <style name="Theme.TaskManagementToDoApp" parent="Base.Theme.TaskManagementToDoApp" />
+</resources>
