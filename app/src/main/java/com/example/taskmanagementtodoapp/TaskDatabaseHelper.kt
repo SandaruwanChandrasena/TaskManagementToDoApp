@@ -4,13 +4,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 
-class TaskDatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,null, DATABASE_VERSION) {
+// Extend SQLiteOpenHelper to manage database creation and version management
+class TaskDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-
-    companion object{
+    companion object {
         private const val DATABASE_NAME = "notesapp.db"
         private const val DATABASE_VERSION = 1
         private const val TABLE_NAME = "allnotes"
@@ -19,36 +17,38 @@ class TaskDatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NA
         private const val COLUMN_CONTENT = "content"
     }
 
-
+    // Create the database table when the database is created for the first time
     override fun onCreate(db: SQLiteDatabase?) {
         val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY,$COLUMN_TITLE TEXT,$COLUMN_CONTENT TEXT)"
         db?.execSQL(createTableQuery)
     }
 
+    // Upgrade the database if the database version changes
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         val dropTableQuery = "DROP TABLE IF EXISTS $TABLE_NAME"
         db?.execSQL(dropTableQuery)
         onCreate(db)
     }
 
-    fun insertNote(note : Task){
+    // Insert a new note into the database
+    fun insertNote(note: Task) {
         val db = writableDatabase
         val values = ContentValues().apply {
-            put(COLUMN_TITLE,note.title)
-            put(COLUMN_CONTENT,note.content)
+            put(COLUMN_TITLE, note.title)
+            put(COLUMN_CONTENT, note.content)
         }
-        db.insert(TABLE_NAME,null, values)
+        db.insert(TABLE_NAME, null, values)
         db.close()
-
     }
 
+    // Retrieve all notes from the database
     fun getAllNotes(): List<Task> {
         val notesList = mutableListOf<Task>()
         val db = readableDatabase
         val query = "SELECT * FROM $TABLE_NAME"
-        val cursor = db.rawQuery(query,null)
+        val cursor = db.rawQuery(query, null)
 
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
             val title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE))
             val content = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CONTENT))
@@ -60,10 +60,10 @@ class TaskDatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NA
         cursor.close()
         db.close()
         return notesList
-
     }
 
-    fun updateNote(note : Task){
+    // Update an existing note in the database
+    fun updateNote(note: Task) {
         val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_TITLE, note.title)
@@ -71,15 +71,15 @@ class TaskDatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NA
         }
         val whereClause = "$COLUMN_ID = ?"
         val whereArgs = arrayOf(note.id.toString())
-        db.update(TABLE_NAME, values, whereClause,whereArgs)
+        db.update(TABLE_NAME, values, whereClause, whereArgs)
         db.close()
-
     }
 
-    fun getNoteById(noteId: Int): Task{
+    // Retrieve a specific note by its ID from the database
+    fun getNoteById(noteId: Int): Task {
         val db = readableDatabase
         val query = "SELECT * FROM $TABLE_NAME WHERE $COLUMN_ID = $noteId"
-        val cursor = db.rawQuery(query,null)
+        val cursor = db.rawQuery(query, null)
         cursor.moveToFirst()
 
         val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
@@ -88,18 +88,15 @@ class TaskDatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NA
 
         cursor.close()
         db.close()
-        return Task(id,title,content)
-
+        return Task(id, title, content)
     }
 
-    fun deleteNote(noteId: Int){
+    // Delete a note from the database based on its ID
+    fun deleteNote(noteId: Int) {
         val db = writableDatabase
         val whereClause = "$COLUMN_ID = ?"
         val whereArgs = arrayOf(noteId.toString())
         db.delete(TABLE_NAME, whereClause, whereArgs)
         db.close()
     }
-
-
-
 }

@@ -4,12 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.example.taskmanagementtodoapp.databinding.ActivityAddTaskBinding
+import com.example.taskmanagementtodoapp.databinding.ActivityMainBinding
 
 class AddTaskActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddTaskBinding
     private lateinit var db : TaskDatabaseHelper
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +34,7 @@ class AddTaskActivity : AppCompatActivity() {
             finish()
 
             // Show a toast message indicating that the note is saved
-            Toast.makeText(this,"Note Saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"Your Task Saved", Toast.LENGTH_SHORT).show()
         }
     }
 }

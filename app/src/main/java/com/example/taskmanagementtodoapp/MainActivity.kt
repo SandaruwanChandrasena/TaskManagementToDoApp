@@ -17,14 +17,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize the database helper
         db = TaskDatabaseHelper(this)
+
+        // Initialize the adapter with all notes from the database
         notesAdapter = TasksAdapter(db.getAllNotes(),this)
 
+        // Set the layout manager and adapter for the RecyclerView
         binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.notesRecyclerView.adapter = notesAdapter
 
+        // Set up click listener for the add button
         binding.addButton.setOnClickListener{
 
+
+            // Create an intent to navigate to the AddTaskActivity
             val intent = Intent(this,AddTaskActivity::class.java)
             startActivity(intent)
         }
@@ -32,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Refresh data in the adapter when the activity resumes
         notesAdapter.refreshData(db.getAllNotes())
     }
 }
